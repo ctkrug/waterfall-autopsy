@@ -57,6 +57,22 @@ modules that touch the DOM/Chart.js.
 are exercised manually (Playwright-driven smoke pass during BUILD/QA), not by the automated
 suite — there's no jsdom dependency yet.
 
+## Cross-browser HAR differences
+
+`fixtures/chrome.har.ts`, `firefox.har.ts`, and `safari.har.ts` encode the structural quirks
+each browser's HAR export actually has, exercised by `crossBrowser.test.ts`:
+
+- **Chrome** (DevTools "Save all as HAR"): the closest to spec-complete — full `timings`,
+  `serverIPAddress`, plus Chrome-only `_initiator`/`connection` fields the analyzer ignores.
+- **Firefox** (Network Monitor export): usually omits `serverIPAddress` and adds a `cache`
+  object and `_securityState` field.
+- **Safari** (Web Inspector export): reports `-1` ("unknown") for `content.size`,
+  `headersSize`, and `bodySize` instead of omitting them, and ships a sparser `timings` object.
+
+`parseHar.ts`'s `toRecord()` already guards every numeric field with `Math.max(value ?? 0, 0)`,
+which absorbs both the missing-field pattern (Firefox/Chrome) and the negative-sentinel
+pattern (Safari) without browser-specific branching.
+
 ## Running it
 
 ```bash
