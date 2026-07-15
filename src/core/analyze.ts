@@ -2,13 +2,7 @@ import type { RequestRecord } from "./types";
 import { isTrackerHost } from "./trackers";
 
 export type OffenderKind =
-  | "image"
-  | "render-blocking-script"
-  | "script"
-  | "tracker"
-  | "font"
-  | "stylesheet"
-  | "other";
+  "image" | "render-blocking-script" | "script" | "tracker" | "font" | "stylesheet" | "other";
 
 export interface Offender {
   kind: OffenderKind;
