@@ -44,11 +44,22 @@
   min-height: 60vh;
 }
 
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  height: 100%;
+}
+
+.sample-case-btn {
+  align-self: center;
+}
+
 .dropzone {
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
+  flex: 1;
   min-height: 40vh;
   border: 2px dashed var(--text-muted);
   border-radius: var(--radius);
