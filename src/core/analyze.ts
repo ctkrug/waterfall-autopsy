@@ -1,4 +1,5 @@
 import type { RequestRecord } from "./types";
+import { isTrackerHost } from "./trackers";
 
 export type OffenderKind = "image" | "script" | "tracker" | "font" | "stylesheet" | "other";
 
@@ -18,24 +19,8 @@ export interface AutopsyReport {
   offenders: Offender[];
 }
 
-// Third-party hosts commonly used for analytics/ads/trackers. Scoped narrow
-// on purpose — false positives are worse than a few misses for a v1 list.
-const TRACKER_HOSTS = [
-  "google-analytics.com",
-  "googletagmanager.com",
-  "doubleclick.net",
-  "facebook.net",
-  "connect.facebook.net",
-  "hotjar.com",
-  "segment.io",
-  "segment.com",
-  "mixpanel.com",
-  "fullstory.com",
-  "intercom.io",
-];
-
 function classify(record: RequestRecord): OffenderKind {
-  if (TRACKER_HOSTS.some((host) => record.host.endsWith(host))) return "tracker";
+  if (isTrackerHost(record.host)) return "tracker";
   if (record.mimeType.startsWith("image/")) return "image";
   if (record.mimeType.includes("javascript") || record.mimeType.includes("ecmascript")) return "script";
   if (record.mimeType.includes("font") || record.url.match(/\.(woff2?|ttf|otf|eot)(\?|$)/)) return "font";
