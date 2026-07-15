@@ -166,6 +166,30 @@ describe("toRequestRecords", () => {
     expect(records[0].timeMs).toBe(90);
   });
 
+  it("treats status 300 (the lower boundary) as a redirect to fold", () => {
+    const har: HarFile = {
+      log: {
+        version: "1.2",
+        entries: [
+          harEntry({
+            request: { method: "GET", url: "https://example.com/multi-choice" },
+            response: { status: 300, content: { size: 0, mimeType: "" }, headersSize: 100, bodySize: 0 },
+            time: 20,
+          }),
+          harEntry({
+            startedDateTime: "2026-01-01T00:00:00.020Z",
+            request: { method: "GET", url: "https://example.com/final" },
+            time: 30,
+          }),
+        ],
+      },
+    };
+
+    const records = toRequestRecords(har);
+    expect(records).toHaveLength(1);
+    expect(records[0].timeMs).toBe(50);
+  });
+
   it("falls back to 'unknown' host for a request URL that isn't a valid URL", () => {
     const har: HarFile = {
       log: {
