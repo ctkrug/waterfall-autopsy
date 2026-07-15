@@ -44,6 +44,17 @@ function render(state: AppState) {
                 <div><dt>Requests</dt><dd>${state.report.totalRequests}</dd></div>
                 <div><dt>Total size</dt><dd>${formatBytes(state.report.totalBytes)}</dd></div>
                 <div><dt>Total time</dt><dd>${Math.round(state.report.totalTimeMs)}ms</dd></div>
+                ${
+                  state.report.totalRequests > 0
+                    ? `<div><dt>1st-party / 3rd-party size</dt><dd>${formatBytes(state.report.firstPartyBytes)} / ${formatBytes(state.report.thirdPartyBytes)}</dd></div>
+                       <div><dt>1st-party / 3rd-party time</dt><dd>${Math.round(state.report.firstPartyTimeMs)}ms / ${Math.round(state.report.thirdPartyTimeMs)}ms</dd></div>
+                       ${
+                         state.report.largestHostContributor
+                           ? `<div><dt>Top host</dt><dd>${escapeHtml(state.report.largestHostContributor.host)} (${formatBytes(state.report.largestHostContributor.bytes)})</dd></div>`
+                           : ""
+                       }`
+                    : ""
+                }
               </dl>`
             : `<label class="dropzone" for="har-input">
                 <span>DROP .HAR TO OPEN CASE</span>
