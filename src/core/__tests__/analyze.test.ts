@@ -44,6 +44,17 @@ describe("analyze", () => {
   });
 });
 
+describe("analyze — cost formula blends bytes and time", () => {
+  it("lets a slow-but-small request outrank a large-but-fast cached asset", () => {
+    const records = [
+      record({ url: "https://example.com/large-cached.bin", bytes: 70_000, timeMs: 50 }),
+      record({ url: "https://example.com/slow-api.json", bytes: 30_000, timeMs: 950 }),
+    ];
+    const report = analyze(records);
+    expect(report.offenders[0].url).toContain("slow-api.json");
+  });
+});
+
 describe("analyze — render-blocking script classification", () => {
   it("classifies a script that starts before the first visual asset as render-blocking", () => {
     const records = [
