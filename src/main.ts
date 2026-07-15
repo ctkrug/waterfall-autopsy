@@ -4,6 +4,7 @@ import { toWaterfallBars } from "./core/chartData";
 import { HarParseError, parseHar, toRequestRecords } from "./core/parseHar";
 import type { RequestRecord } from "./core/types";
 import { destroyWaterfallChart, renderWaterfallChart } from "./chart";
+import { sampleCaseHar } from "./sampleCase";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
@@ -56,10 +57,13 @@ function render(state: AppState) {
                     : ""
                 }
               </dl>`
-            : `<label class="dropzone" for="har-input">
-                <span>DROP .HAR TO OPEN CASE</span>
-                <input id="har-input" type="file" accept=".har,application/json" />
-              </label>`
+            : `<div class="empty-state">
+                <label class="dropzone" for="har-input">
+                  <span>DROP .HAR TO OPEN CASE</span>
+                  <input id="har-input" type="file" accept=".har,application/json" />
+                </label>
+                <button type="button" class="sample-case-btn">Try a sample case</button>
+              </div>`
         }
         ${state.error ? `<p class="error" role="alert">${escapeHtml(state.error)}</p>` : ""}
         ${
@@ -141,6 +145,11 @@ function render(state: AppState) {
       const url = card.dataset.url;
       render({ ...state, highlightUrl: state.highlightUrl === url ? undefined : url });
     });
+  });
+
+  document.querySelector<HTMLButtonElement>(".sample-case-btn")?.addEventListener("click", () => {
+    const records = toRequestRecords(sampleCaseHar);
+    render({ records, report: analyze(records) });
   });
 }
 
