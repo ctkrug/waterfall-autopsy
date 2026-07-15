@@ -18,7 +18,7 @@ a completed investigation, not a live dashboard.
 | `--surface-1`      | `#FFFFFF` | index-card surfaces (offender cards, panels)     |
 | `--surface-2`      | `#E9E0C8` | manila-folder tan — section bands, the drop zone |
 | `--text`           | `#211D18` | body/ink text                                    |
-| `--text-muted`     | `#6E6355` | captions, metadata, typewriter-faded labels      |
+| `--text-muted`     | `#6A6052` | captions, metadata, typewriter-faded labels      |
 | `--accent`         | `#B3241C` | case-stamp red — critical offenders, primary CTA |
 | `--accent-support` | `#2B4A3E` | evidence-tag green — secondary badges, links     |
 | `--success`        | `#2E6E45` | "fixed"/low-cost states                          |

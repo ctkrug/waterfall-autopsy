@@ -3,7 +3,9 @@
   --surface-1: #ffffff;
   --surface-2: #e9e0c8;
   --text: #211d18;
-  --text-muted: #6e6355;
+  /* Darkened from the original #6E6355 — that shade only hit 4.46:1 against
+     --surface-2 (case-panel tan), just under the 4.5:1 AA minimum. */
+  --text-muted: #6a6052;
   --accent: #b3241c;
   --accent-support: #2b4a3e;
   --success: #2e6e45;
