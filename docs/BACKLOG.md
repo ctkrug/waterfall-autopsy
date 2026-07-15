@@ -60,11 +60,11 @@ checkable acceptance criteria — no "works well" vibes checks.
     without requiring the user to have their own file.
   - The sample is real enough to exercise at least three distinct offender kinds.
 
-- [ ] **3.2 Copyable report output**
+- [x] **3.2 Copyable report output**
   - A "copy punch list" action puts a plain-text/Markdown version of the current punch list
     (rank, kind, fix, size) on the clipboard, verified by a visible confirmation state.
 
-- [ ] **3.3 Loading and large-file handling**
+- [x] **3.3 Loading and large-file handling**
   - Parsing a HAR with 1,000+ entries shows a designed loading state and completes without
     freezing the main thread for more than ~1 second (measured, not assumed).
   - A file that isn't a HAR at all (e.g. a `.png` renamed to `.har`) is rejected with the
