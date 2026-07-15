@@ -1,6 +1,7 @@
 import "./app.css";
 import { analyze, type AutopsyReport } from "./core/analyze";
 import { toWaterfallBars } from "./core/chartData";
+import { formatPunchListMarkdown } from "./core/formatReport";
 import { HarParseError, parseHar, toRequestRecords } from "./core/parseHar";
 import type { RequestRecord } from "./core/types";
 import { destroyWaterfallChart, renderWaterfallChart } from "./chart";
@@ -8,11 +9,14 @@ import { sampleCaseHar } from "./sampleCase";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
+type CopyStatus = "idle" | "copied" | "failed";
+
 interface AppState {
   records?: RequestRecord[];
   report?: AutopsyReport;
   error?: string;
   highlightUrl?: string;
+  copyStatus?: CopyStatus;
 }
 
 function formatBytes(bytes: number): string {
@@ -75,6 +79,15 @@ function render(state: AppState) {
         }
       </section>
       <section class="punch-list" aria-label="Offender punch list">
+        ${
+          state.report && state.report.totalRequests > 0
+            ? `<div class="punch-list-toolbar">
+                <button type="button" class="copy-report-btn" aria-live="polite">
+                  ${state.copyStatus === "copied" ? "Copied!" : state.copyStatus === "failed" ? "Couldn't copy" : "Copy punch list"}
+                </button>
+              </div>`
+            : ""
+        }
         ${
           state.report && state.report.totalRequests === 0
             ? `<p class="empty-hint">No requests captured in this HAR — there's nothing to autopsy.</p>`
@@ -151,6 +164,23 @@ function render(state: AppState) {
     const records = toRequestRecords(sampleCaseHar);
     render({ records, report: analyze(records) });
   });
+
+  document.querySelector<HTMLButtonElement>(".copy-report-btn")?.addEventListener("click", () => {
+    if (!state.report) return;
+    const text = formatPunchListMarkdown(state.report);
+    if (!navigator.clipboard) {
+      render({ ...state, copyStatus: "failed" });
+      return;
+    }
+    navigator.clipboard
+      .writeText(text)
+      .then(() => render({ ...state, copyStatus: "copied" }))
+      .catch(() => render({ ...state, copyStatus: "failed" }));
+  });
+
+  if (state.copyStatus) {
+    setTimeout(() => render({ ...state, copyStatus: undefined }), 1800);
+  }
 }
 
 render({});
