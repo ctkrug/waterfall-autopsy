@@ -40,6 +40,16 @@ describe("parseHar", () => {
     const fakePngAsText = "\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR\x00\x00\x01\x00";
     expect(() => parseHar(fakePngAsText)).toThrow(HarParseError);
   });
+
+  it("rejects a HAR whose log.entries isn't an array", () => {
+    expect(() => parseHar(JSON.stringify({ log: { version: "1.2", entries: "nope" } }))).toThrow(
+      HarParseError,
+    );
+  });
+
+  it("rejects whitespace-only input the same as any other invalid JSON", () => {
+    expect(() => parseHar("   \n\t  ")).toThrow(HarParseError);
+  });
 });
 
 describe("toRequestRecords", () => {
@@ -154,5 +164,17 @@ describe("toRequestRecords", () => {
     expect(records).toHaveLength(1);
     expect(records[0].url).toBe("https://example.com/dead-end");
     expect(records[0].timeMs).toBe(90);
+  });
+
+  it("falls back to 'unknown' host for a request URL that isn't a valid URL", () => {
+    const har: HarFile = {
+      log: {
+        version: "1.2",
+        entries: [harEntry({ request: { method: "GET", url: "not a url at all" } })],
+      },
+    };
+
+    const [record] = toRequestRecords(har);
+    expect(record.host).toBe("unknown");
   });
 });
