@@ -5,6 +5,9 @@
   "type": "module",
   "license": "MIT",
   "author": "Charlie Krug",
+  "engines": {
+    "node": ">=20"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/ctkrug/waterfall-autopsy.git"
