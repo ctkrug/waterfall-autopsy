@@ -10,6 +10,16 @@ function formatBytes(bytes: number): string {
   return `${(bytes / (1024 * 1024)).toFixed(1)}MB`;
 }
 
+// HAR content (URLs, mime types) is untrusted input rendered via innerHTML —
+// escape it so a crafted HAR can't inject markup into the page.
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 function render(state: { report?: AutopsyReport; error?: string }) {
   app.innerHTML = `
     <header class="masthead">
@@ -30,7 +40,7 @@ function render(state: { report?: AutopsyReport; error?: string }) {
                 <input id="har-input" type="file" accept=".har,application/json" />
               </label>`
         }
-        ${state.error ? `<p class="error" role="alert">${state.error}</p>` : ""}
+        ${state.error ? `<p class="error" role="alert">${escapeHtml(state.error)}</p>` : ""}
       </section>
       <section class="punch-list" aria-label="Offender punch list">
         ${
@@ -40,9 +50,9 @@ function render(state: { report?: AutopsyReport; error?: string }) {
                   (o, i) => `
                 <article class="offender-card ${i === 0 ? "top-offender" : ""}">
                   ${i === 0 ? `<span class="stamp">TOP OFFENDER</span>` : ""}
-                  <span class="kind">${o.kind}</span>
-                  <p class="url">${o.url}</p>
-                  <p class="fix">${o.fix}</p>
+                  <span class="kind">${escapeHtml(o.kind)}</span>
+                  <p class="url">${escapeHtml(o.url)}</p>
+                  <p class="fix">${escapeHtml(o.fix)}</p>
                   <p class="meta">${formatBytes(o.bytes)} · ${Math.round(o.timeMs)}ms</p>
                 </article>`,
                 )
@@ -53,10 +63,10 @@ function render(state: { report?: AutopsyReport; error?: string }) {
     </main>
   `;
 
+  const dropzone = document.querySelector<HTMLLabelElement>(".dropzone");
   const input = document.querySelector<HTMLInputElement>("#har-input");
-  input?.addEventListener("change", async () => {
-    const file = input.files?.[0];
-    if (!file) return;
+
+  async function openCase(file: File) {
     try {
       const text = await file.text();
       const har = parseHar(text);
@@ -65,6 +75,25 @@ function render(state: { report?: AutopsyReport; error?: string }) {
     } catch (err) {
       render({ error: err instanceof HarParseError ? err.message : "Couldn't read that file." });
     }
+  }
+
+  input?.addEventListener("change", () => {
+    const file = input.files?.[0];
+    if (file) void openCase(file);
+  });
+
+  dropzone?.addEventListener("dragover", (event) => {
+    event.preventDefault();
+    dropzone.classList.add("dropzone-active");
+  });
+  dropzone?.addEventListener("dragleave", () => {
+    dropzone.classList.remove("dropzone-active");
+  });
+  dropzone?.addEventListener("drop", (event) => {
+    event.preventDefault();
+    dropzone.classList.remove("dropzone-active");
+    const file = event.dataTransfer?.files?.[0];
+    if (file) void openCase(file);
   });
 }
 

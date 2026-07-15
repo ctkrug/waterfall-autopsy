@@ -60,7 +60,8 @@
 }
 
 .dropzone:hover,
-.dropzone:focus-within {
+.dropzone:focus-within,
+.dropzone-active {
   border-color: var(--accent);
   color: var(--text);
   background: var(--surface-1);
