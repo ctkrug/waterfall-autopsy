@@ -28,6 +28,21 @@
   flex-shrink: 0;
 }
 
+/* The wordmark + tagline alone can shrink-wrap within 390px because the
+   tagline's own text wraps, but adding a flex-shrink:0 button pushed the row
+   past the viewport. Give the tagline its own full-width line below wordmark
+   + button instead of fighting for horizontal space with them. */
+@media (max-width: 480px) {
+  .masthead {
+    flex-wrap: wrap;
+  }
+
+  .tagline {
+    order: 3;
+    flex-basis: 100%;
+  }
+}
+
 .layout {
   flex: 1;
   display: grid;
