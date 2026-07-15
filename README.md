@@ -19,22 +19,29 @@ first."_ That synthesis is the actual engineering problem this project solves.
 
 ## The wow moment
 
-Drop a `.har` file onto the page. Instead of a chart to interpret, you immediately get a
-prioritized punch list: the specific offending requests, how much load time each one costs,
-and a one-line fix — ranked so the biggest win is first.
+Drop a `.har` file onto the page (or click "try a sample case" if you don't have one handy).
+Instead of a chart to interpret, you immediately get a prioritized punch list: the specific
+offending requests, how much load time each one costs, and a one-line fix — ranked so the
+biggest win is first, with a red case-stamp on the worst offender.
 
-## Planned features
+## What it does today
 
-- **HAR parsing** — robust ingestion of the HAR 1.2 format, tolerant of the quirks different
-  browsers/proxies produce.
-- **Opinionated analysis engine** — rules that classify requests (hero image, tracker,
-  render-blocking script, web font, etc.), score their cost against total load time, and
-  generate a human-readable verdict + fix per offender.
-- **Punch list report** — the primary UI: a ranked list of offenders with plain-English
-  summaries, not a raw chart.
-- **Supporting waterfall view** — a Chart.js visualization for context, secondary to the
-  punch list.
-- **Zero-backend** — runs entirely client-side; a HAR file never leaves the browser.
+- **Drop or select a `.har` file** — parsed entirely client-side; the file never leaves your
+  browser.
+- **Ranked punch list** — every request classified as an oversized image, a known
+  analytics/ads tracker (25+ documented hosts), a render-blocking script, an async/deferred
+  script, a font, or a stylesheet, each with a plain-English fix that names its actual size.
+- **Cost scoring that isn't bytes-only** — ranks by a blend of byte share and time share, so
+  a small-but-slow request can outrank a large-but-cached one.
+- **Redirect-chain aware** — a 3xx chain's time is folded into the request that actually
+  resolves it, instead of listing each hop as its own falsely-cheap entry.
+- **Supporting waterfall chart** — a Chart.js timeline of every request's start/duration;
+  click a punch-list card to highlight its bar.
+- **First-party / third-party breakdown** — byte and time share split by party, plus the
+  single largest contributing host.
+- **Try a sample case** — no HAR handy? Load a bundled example and see the full report.
+- **Handles malformed input** — a non-JSON file, a non-HAR JSON file, or a HAR with zero
+  entries all produce a plain-English message, never a blank screen or console error.
 
 ## Stack
 
@@ -44,8 +51,9 @@ server-side component.
 
 ## Status
 
-Early scaffold. See [`docs/VISION.md`](docs/VISION.md) for the full design and
-[`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan.
+Core autopsy engine and report view are functionally complete. See
+[`docs/VISION.md`](docs/VISION.md) for the full design, [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+for a module map, and [`docs/BACKLOG.md`](docs/BACKLOG.md) for what's left.
 
 ## Development
 
