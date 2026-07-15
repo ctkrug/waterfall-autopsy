@@ -37,14 +37,19 @@ modules that touch the DOM/Chart.js.
   first-party/third-party byte+time split plus the single largest host contributor.
 - `src/core/chartData.ts` — pure transform from `RequestRecord[]` to Chart.js floating-bar
   data (`[startMs, endMs]` ranges) plus a shortened host+path label.
+- `src/core/formatReport.ts` — `formatPunchListMarkdown()` renders an `AutopsyReport` as a
+  ranked Markdown/plain-text list for the "copy punch list" clipboard action.
 - `src/chart.ts` — owns the one live Chart.js instance; `renderWaterfallChart()` destroys
   the previous instance before creating a new one so repeated renders (new file, highlight
   toggle) don't leak canvas contexts.
 - `src/sampleCase.ts` — a bundled example HAR (redirect chain, oversized image, tracker,
   render-blocking script, stylesheet) for the "try a sample case" control.
 - `src/main.ts` — the whole UI: a single `render(state)` that re-renders `#app`'s innerHTML
-  from an `AppState` (`records`, `report`, `error`, `highlightUrl`) and re-attaches event
-  listeners each render. No framework — deliberately small enough not to need one yet.
+  from an `AppState` (`records`, `report`, `error`, `highlightUrl`, `copyStatus`, `loading`)
+  and re-attaches event listeners each render. No framework — deliberately small enough not
+  to need one yet. `openCase()` renders a loading state and yields one animation frame before
+  the synchronous parse/analyze pipeline runs, so large HAR files paint feedback instead of
+  appearing to hang.
 
 ## Tests
 
