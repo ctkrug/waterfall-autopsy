@@ -9,6 +9,14 @@ import { sampleCaseHar } from "./sampleCase";
 
 const app = document.querySelector<HTMLDivElement>("#app")!;
 
+// Without this, a file dropped anywhere outside the dropzone (or anywhere at
+// all once a report is loaded and the dropzone no longer exists) triggers
+// the browser's default behavior of navigating the tab to display the raw
+// file — destroying the whole app. Registered once at module load, not
+// inside render(), so it isn't re-added on every state change.
+window.addEventListener("dragover", (event) => event.preventDefault());
+window.addEventListener("drop", (event) => event.preventDefault());
+
 // Tracks the toast's pending auto-hide so a fast follow-up render (e.g.
 // highlighting a card while "Copied!" is still showing) replaces it instead
 // of arming a second timer alongside a now-stale one.
@@ -54,6 +62,7 @@ function render(state: AppState) {
     <header class="masthead">
       <span class="wordmark">Waterfall<em>Autopsy</em></span>
       <span class="tagline">the offenders, not the chart</span>
+      ${state.report ? `<button type="button" class="new-case-btn">New case</button>` : ""}
     </header>
     <p class="sr-only" role="status" aria-live="polite">${escapeHtml(statusAnnouncement(state))}</p>
     <main class="layout">
@@ -189,6 +198,10 @@ function render(state: AppState) {
   document.querySelector<HTMLButtonElement>(".sample-case-btn")?.addEventListener("click", () => {
     const records = toRequestRecords(sampleCaseHar);
     render({ records, report: analyze(records) });
+  });
+
+  document.querySelector<HTMLButtonElement>(".new-case-btn")?.addEventListener("click", () => {
+    render({});
   });
 
   document.querySelector<HTMLButtonElement>(".copy-report-btn")?.addEventListener("click", () => {

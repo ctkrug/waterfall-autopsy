@@ -23,6 +23,11 @@
   font-size: 0.85rem;
 }
 
+.new-case-btn {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
 .layout {
   flex: 1;
   display: grid;
