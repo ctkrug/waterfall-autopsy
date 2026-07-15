@@ -29,7 +29,7 @@ biggest win is first, with a red case-stamp on the worst offender.
 - **Drop or select a `.har` file** — parsed entirely client-side; the file never leaves your
   browser.
 - **Ranked punch list** — every request classified as an oversized image, a known
-  analytics/ads tracker (25+ documented hosts), a render-blocking script, an async/deferred
+  analytics/ads tracker (24 documented hosts), a render-blocking script, an async/deferred
   script, a font, or a stylesheet, each with a plain-English fix that names its actual size.
 - **Cost scoring that isn't bytes-only** — ranks by a blend of byte share and time share, so
   a small-but-slow request can outrank a large-but-cached one.
