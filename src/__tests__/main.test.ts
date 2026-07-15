@@ -94,3 +94,43 @@ describe("main — untrusted HAR content rendering", () => {
     expect(document.querySelector(".offender-card .url")?.textContent).toBe(maliciousUrl);
   });
 });
+
+describe("main — recovering from a loaded case", () => {
+  beforeEach(() => {
+    vi.resetModules();
+    vi.useFakeTimers();
+    document.body.innerHTML = '<div id="app"></div>';
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
+  });
+
+  it("prevents the browser's default navigate-away when a file is dropped outside the dropzone", async () => {
+    await import("../main");
+    document.querySelector<HTMLButtonElement>(".sample-case-btn")!.click();
+
+    // Once a report is loaded there's no dropzone in the DOM at all, so a
+    // dropped file necessarily lands on some other element (or the window).
+    const dropEvent = new Event("drop", { bubbles: true, cancelable: true });
+    window.dispatchEvent(dropEvent);
+    expect(dropEvent.defaultPrevented).toBe(true);
+
+    const dragoverEvent = new Event("dragover", { bubbles: true, cancelable: true });
+    window.dispatchEvent(dragoverEvent);
+    expect(dragoverEvent.defaultPrevented).toBe(true);
+  });
+
+  it("offers a way to open a new case once a report is already loaded", async () => {
+    await import("../main");
+    document.querySelector<HTMLButtonElement>(".sample-case-btn")!.click();
+    expect(document.querySelector("#har-input")).toBeNull(); // the dropzone/input is gone
+
+    const resetControl = document.querySelector<HTMLButtonElement>(".new-case-btn");
+    expect(resetControl).not.toBeNull();
+    resetControl!.click();
+
+    expect(document.querySelector("#har-input")).not.toBeNull();
+    expect(document.querySelector(".offender-card")).toBeNull();
+  });
+});
