@@ -112,6 +112,30 @@ describe("toRequestRecords", () => {
     expect(record.mimeType).toBe("application/octet-stream");
   });
 
+  it("treats a non-numeric size/time field as zero instead of propagating NaN", () => {
+    // A hostile or corrupt HAR isn't schema-validated field-by-field — only
+    // the top-level shape is — so a string where a number is expected must
+    // degrade to zero-cost, not poison every downstream sum/sort with NaN.
+    const raw = JSON.stringify({
+      log: {
+        version: "1.2",
+        entries: [
+          {
+            startedDateTime: "2026-01-01T00:00:00.000Z",
+            time: "not-a-number",
+            request: { method: "GET", url: "https://example.com/thin" },
+            response: { status: 200, content: { size: "also-not-a-number", mimeType: "text/plain" } },
+          },
+        ],
+      },
+    });
+
+    const har = parseHar(raw);
+    const [record] = toRequestRecords(har);
+    expect(record.bytes).toBe(0);
+    expect(record.timeMs).toBe(0);
+  });
+
   it("keeps the last hop of a redirect chain that never resolves", () => {
     const har: HarFile = {
       log: {
