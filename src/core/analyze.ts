@@ -1,7 +1,14 @@
 import type { RequestRecord } from "./types";
 import { isTrackerHost } from "./trackers";
 
-export type OffenderKind = "image" | "script" | "tracker" | "font" | "stylesheet" | "other";
+export type OffenderKind =
+  | "image"
+  | "render-blocking-script"
+  | "script"
+  | "tracker"
+  | "font"
+  | "stylesheet"
+  | "other";
 
 export interface Offender {
   kind: OffenderKind;
@@ -19,10 +26,26 @@ export interface AutopsyReport {
   offenders: Offender[];
 }
 
-function classify(record: RequestRecord): OffenderKind {
+function isScriptMime(mimeType: string): boolean {
+  return mimeType.includes("javascript") || mimeType.includes("ecmascript");
+}
+
+// A HAR has no direct signal for a <script>'s async/defer attributes, so
+// render-blocking is inferred from timing position: a script that starts at
+// or before the first non-script asset (image/font/stylesheet) is on the
+// critical path, because the parser hadn't yet moved on to discover other
+// resources. A script that starts later is presumed async/deferred.
+function firstNonScriptStartMs(records: RequestRecord[]): number {
+  const starts = records.filter((r) => !isScriptMime(r.mimeType)).map((r) => r.startMs);
+  return starts.length > 0 ? Math.min(...starts) : Infinity;
+}
+
+function classify(record: RequestRecord, renderBlockingThresholdMs: number): OffenderKind {
   if (isTrackerHost(record.host)) return "tracker";
   if (record.mimeType.startsWith("image/")) return "image";
-  if (record.mimeType.includes("javascript") || record.mimeType.includes("ecmascript")) return "script";
+  if (isScriptMime(record.mimeType)) {
+    return record.startMs <= renderBlockingThresholdMs ? "render-blocking-script" : "script";
+  }
   if (record.mimeType.includes("font") || record.url.match(/\.(woff2?|ttf|otf|eot)(\?|$)/)) return "font";
   if (record.mimeType.includes("css")) return "stylesheet";
   return "other";
@@ -33,8 +56,10 @@ function fixFor(kind: OffenderKind, record: RequestRecord): string {
   switch (kind) {
     case "image":
       return `Compress or lazy-load this ${kb}KB image — it's larger than most full pages.`;
+    case "render-blocking-script":
+      return `Add async or defer to this ${kb}KB script — it's blocking first paint.`;
     case "script":
-      return `Defer or code-split this ${kb}KB script so it isn't blocking initial render.`;
+      return `Code-split this ${kb}KB script so it isn't loaded on every page.`;
     case "tracker":
       return `Load this third-party tracker async or drop it if it isn't essential.`;
     case "font":
@@ -57,9 +82,14 @@ function costOf(record: RequestRecord, totalBytes: number, totalTimeMs: number):
 export function analyze(records: RequestRecord[], topN = 10): AutopsyReport {
   const totalBytes = records.reduce((sum, r) => sum + r.bytes, 0);
   const totalTimeMs = records.reduce((sum, r) => sum + r.timeMs, 0);
+  const renderBlockingThresholdMs = firstNonScriptStartMs(records);
 
   const offenders = records
-    .map((record) => ({ record, kind: classify(record), cost: costOf(record, totalBytes, totalTimeMs) }))
+    .map((record) => ({
+      record,
+      kind: classify(record, renderBlockingThresholdMs),
+      cost: costOf(record, totalBytes, totalTimeMs),
+    }))
     .sort((a, b) => b.cost - a.cost)
     .slice(0, topN)
     .map(({ record, kind }) => ({
