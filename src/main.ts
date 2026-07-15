@@ -40,10 +40,12 @@ function render(state: { report?: AutopsyReport; error?: string }) {
       </section>
       <section class="punch-list" aria-label="Offender punch list">
         ${
-          state.report
-            ? state.report.offenders
-                .map(
-                  (o, i) => `
+          state.report && state.report.totalRequests === 0
+            ? `<p class="empty-hint">No requests captured in this HAR — there's nothing to autopsy.</p>`
+            : state.report
+              ? state.report.offenders
+                  .map(
+                    (o, i) => `
                 <article class="offender-card ${i === 0 ? "top-offender" : ""}">
                   ${i === 0 ? `<span class="stamp">TOP OFFENDER</span>` : ""}
                   <span class="kind">${escapeHtml(o.kind)}</span>
@@ -51,9 +53,9 @@ function render(state: { report?: AutopsyReport; error?: string }) {
                   <p class="fix">${escapeHtml(o.fix)}</p>
                   <p class="meta">${formatBytes(o.bytes)} · ${Math.round(o.timeMs)}ms</p>
                 </article>`,
-                )
-                .join("")
-            : `<p class="empty-hint">No case open yet. Drop a HAR file to generate the punch list.</p>`
+                  )
+                  .join("")
+              : `<p class="empty-hint">No case open yet. Drop a HAR file to generate the punch list.</p>`
         }
       </section>
     </main>
