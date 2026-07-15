@@ -111,3 +111,12 @@ describe("analyze — render-blocking script classification", () => {
     expect(script?.kind).toBe("script");
   });
 });
+
+describe("analyze — font classification and fix text", () => {
+  it("classifies a font file by extension and recommends subsetting/preloading it", () => {
+    const records = [record({ url: "https://example.com/brand.woff2", mimeType: "font/woff2" })];
+    const report = analyze(records);
+    expect(report.offenders[0].kind).toBe("font");
+    expect(report.offenders[0].fix).toMatch(/subset|preload/i);
+  });
+});

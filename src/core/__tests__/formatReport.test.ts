@@ -29,4 +29,21 @@ describe("formatPunchListMarkdown", () => {
     const text = formatPunchListMarkdown(analyze([]));
     expect(text).toBe("No offenders found — this HAR has no requests to autopsy.");
   });
+
+  it("formats a sub-1KB offender's size in bytes, not a KB decimal", () => {
+    const records = [
+      {
+        url: "https://example.com/tiny.gif",
+        host: "example.com",
+        method: "GET",
+        status: 200,
+        mimeType: "image/gif",
+        bytes: 43,
+        timeMs: 5,
+        startMs: 0,
+      },
+    ];
+    const text = formatPunchListMarkdown(analyze(records));
+    expect(text).toContain("(43B, 5ms)");
+  });
 });
