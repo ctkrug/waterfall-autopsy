@@ -16,12 +16,12 @@ export function parseHar(raw: string): HarFile {
     !("log" in json) ||
     typeof (json as { log?: unknown }).log !== "object"
   ) {
-    throw new HarParseError("Missing a top-level \"log\" object — this doesn't look like a HAR file.");
+    throw new HarParseError('Missing a top-level "log" object — this doesn\'t look like a HAR file.');
   }
 
   const log = (json as HarFile).log;
   if (!Array.isArray(log.entries)) {
-    throw new HarParseError("HAR log has no \"entries\" array — nothing to analyze.");
+    throw new HarParseError('HAR log has no "entries" array — nothing to analyze.');
   }
 
   return json as HarFile;

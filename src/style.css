@@ -63,7 +63,10 @@ button {
   background: var(--surface-1);
   color: var(--text);
   padding: var(--space-1) var(--space-2);
-  transition: transform var(--motion), background var(--motion), box-shadow var(--motion);
+  transition:
+    transform var(--motion),
+    background var(--motion),
+    box-shadow var(--motion);
 }
 
 button:hover {

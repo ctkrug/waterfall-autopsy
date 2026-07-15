@@ -12,8 +12,8 @@ squint at.
 
 Performance tools are good at measurement and bad at opinion. Lighthouse tells you your LCP
 is 4.1s; a waterfall chart shows you a wall of bars. Neither tells you, in one sentence,
-*"this 4.2MB hero image and these 6 tracker scripts are 70% of your load time — fix these
-first."* That synthesis is the actual engineering problem this project solves.
+_"this 4.2MB hero image and these 6 tracker scripts are 70% of your load time — fix these
+first."_ That synthesis is the actual engineering problem this project solves.
 
 ## The wow moment
 

@@ -6,7 +6,7 @@ Every browser DevTools panel and third-party performance tool gives you a networ
 rows of colored bars, one per request. It's accurate and it's useless on its own — you still
 have to eyeball 150 rows, mentally cross-reference sizes and timings, and figure out which
 handful of requests are actually worth fixing. That interpretation step is skipped by almost
-every tool in this space; they measure and visualize, but they don't *conclude*.
+every tool in this space; they measure and visualize, but they don't _conclude_.
 
 Meanwhile HAR exports are everywhere — every browser can produce one in two clicks — but
 almost nothing does more with a `.har` file than replay the same waterfall you'd get from

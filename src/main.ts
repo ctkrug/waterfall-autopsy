@@ -13,11 +13,7 @@ function formatBytes(bytes: number): string {
 // HAR content (URLs, mime types) is untrusted input rendered via innerHTML —
 // escape it so a crafted HAR can't inject markup into the page.
 function escapeHtml(value: string): string {
-  return value
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+  return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 }
 
 function render(state: { report?: AutopsyReport; error?: string }) {

@@ -5,7 +5,7 @@ checkable acceptance criteria — no "works well" vibes checks.
 
 ## Epic 1 — Core autopsy engine (the wow moment)
 
-- [ ] **1.1 Drop a HAR, get the punch list** *(the wow moment — must work end to end first)*
+- [ ] **1.1 Drop a HAR, get the punch list** _(the wow moment — must work end to end first)_
   - Dropping or selecting a real HAR file (captured from Chrome DevTools' "Save all as HAR")
     renders a ranked list of offenders within 2 seconds, with no page reload.
   - Each punch-list entry shows a request kind, a plain-English one-line fix referencing its
