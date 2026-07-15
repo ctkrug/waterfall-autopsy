@@ -67,7 +67,7 @@ function render(state: AppState) {
                     : ""
                 }
               </dl>`
-            : `<div class="empty-state">
+              : `<div class="empty-state">
                 <label class="dropzone" for="har-input">
                   <span>DROP .HAR TO OPEN CASE</span>
                   <input id="har-input" type="file" accept=".har,application/json" />
