@@ -1,7 +1,7 @@
 {
   "name": "waterfall-autopsy",
   "version": "0.1.0",
-  "description": "Drop in a .har network export and get an opinionated autopsy report of what's costing you load time.",
+  "description": "Culprit: drop a .har export and get a ranked punch list of the images, scripts, and trackers slowing your page.",
   "type": "module",
   "license": "MIT",
   "author": "Charlie Krug",
