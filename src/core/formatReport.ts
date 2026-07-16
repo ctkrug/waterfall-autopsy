@@ -12,5 +12,5 @@ export function formatPunchListMarkdown(report: AutopsyReport): string {
     (o, i) => `${i + 1}. **${o.kind}** — ${o.fix} (${formatBytes(o.bytes)}, ${Math.round(o.timeMs)}ms)`,
   );
 
-  return [`Waterfall Autopsy — punch list (${report.totalRequests} requests)`, "", ...lines].join("\n");
+  return [`Culprit — punch list (${report.totalRequests} requests)`, "", ...lines].join("\n");
 }

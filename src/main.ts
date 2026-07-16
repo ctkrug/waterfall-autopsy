@@ -55,9 +55,18 @@ function render(state: AppState) {
 
   app.innerHTML = `
     <header class="masthead">
-      <span class="wordmark">Waterfall<em>Autopsy</em></span>
+      <span class="wordmark">
+        <svg class="wordmark-mark" viewBox="0 0 24 24" aria-hidden="true">
+          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="2.5" />
+          <circle cx="12" cy="12" r="2.5" fill="currentColor" />
+        </svg>
+        Culprit
+      </span>
       <span class="tagline">the offenders, not the chart</span>
-      ${state.report ? `<button type="button" class="new-case-btn">New case</button>` : ""}
+      <nav class="masthead-actions">
+        <a class="gh-link" href="https://github.com/ctkrug/waterfall-autopsy">GitHub</a>
+        ${state.report ? `<button type="button" class="new-case-btn">New case</button>` : ""}
+      </nav>
     </header>
     <p class="sr-only" role="status" aria-live="polite">${escapeHtml(statusAnnouncement(state))}</p>
     <main class="layout">

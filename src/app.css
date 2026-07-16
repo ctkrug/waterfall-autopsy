@@ -8,14 +8,21 @@
 }
 
 .wordmark {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-display);
   font-size: 1.5rem;
   letter-spacing: 0.02em;
 }
 
-.wordmark em {
-  font-style: normal;
+/* The red target ring "circles the culprit" — the same glyph as the favicon,
+   so the tab icon and the wordmark read as one mark. */
+.wordmark-mark {
+  width: 1.1em;
+  height: 1.1em;
   color: var(--accent);
+  flex-shrink: 0;
 }
 
 .tagline {
@@ -23,9 +30,25 @@
   font-size: 0.85rem;
 }
 
-.new-case-btn {
+.masthead-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
   flex-shrink: 0;
+}
+
+.gh-link {
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  color: var(--accent-support);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--motion);
+}
+
+.gh-link:hover {
+  border-bottom-color: var(--accent-support);
 }
 
 /* The wordmark + tagline alone can shrink-wrap within 390px because the
