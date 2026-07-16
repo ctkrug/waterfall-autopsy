@@ -37,6 +37,8 @@ modules that touch the DOM/Chart.js.
   first-party/third-party byte+time split plus the single largest host contributor.
 - `src/core/chartData.ts` — pure transform from `RequestRecord[]` to Chart.js floating-bar
   data (`[startMs, endMs]` ranges) plus a shortened host+path label.
+- `src/core/format.ts` — `formatBytes()`, the single human-readable byte formatter shared by
+  the report view and the copyable Markdown punch list so a size renders identically in both.
 - `src/core/formatReport.ts` — `formatPunchListMarkdown()` renders an `AutopsyReport` as a
   ranked Markdown/plain-text list for the "copy punch list" clipboard action.
 - `src/chart.ts` — owns the one live Chart.js instance; `renderWaterfallChart()` destroys
